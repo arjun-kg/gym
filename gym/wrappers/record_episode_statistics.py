@@ -25,12 +25,13 @@ class RecordEpisodeStatistics(gym.Wrapper):
         return observations
 
     def step(self, action):
-        observations, rewards, dones, infos = super().step(action)
+        observations, rewards, dones, truncateds, infos = super().step(action)
         self.episode_returns += rewards
         self.episode_lengths += 1
         if not self.is_vector_env:
             infos = [infos]
             dones = [dones]
+            truncateds = [truncateds]
         else:
             infos = list(infos)  # Convert infos to mutable type
         for i in range(len(dones)):
@@ -55,5 +56,6 @@ class RecordEpisodeStatistics(gym.Wrapper):
             observations,
             rewards,
             dones if self.is_vector_env else dones[0],
+            truncateds if self.is_vector_env else truncateds[0],
             infos if self.is_vector_env else infos[0],
         )

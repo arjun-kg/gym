@@ -25,7 +25,7 @@ class UnittestEnv(core.Env):
 
     def step(self, action):
         observation = self.observation_space.sample()  # Dummy observation
-        return (observation, 0.0, False, {})
+        return (observation, 0.0, False, False, {})
 
 
 class UnknownSpacesEnv(core.Env):
@@ -54,7 +54,7 @@ class UnknownSpacesEnv(core.Env):
 
     def step(self, action):
         observation = self.observation_space.sample()  # Dummy observation
-        return (observation, 0.0, False, {})
+        return (observation, 0.0, False, False, {})
 
 
 class OldStyleEnv(core.Env):
@@ -68,7 +68,7 @@ class OldStyleEnv(core.Env):
         return 0
 
     def step(self, action):
-        return 0, 0, False, {}
+        return 0, 0, False, False, {}
 
 
 class NewPropertyWrapper(core.Wrapper):

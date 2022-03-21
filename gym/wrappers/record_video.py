@@ -83,7 +83,7 @@ class RecordVideo(gym.Wrapper):
             return self.episode_trigger(self.episode_id)
 
     def step(self, action):
-        observations, rewards, dones, infos = super().step(action)
+        observations, rewards, dones, truncateds, infos = super().step(action)
 
         # increment steps and episodes
         self.step_id += 1
@@ -109,7 +109,7 @@ class RecordVideo(gym.Wrapper):
         elif self._video_enabled():
             self.start_video_recorder()
 
-        return observations, rewards, dones, infos
+        return observations, rewards, dones, truncateds, infos
 
     def close_video_recorder(self) -> None:
         if self.recording:

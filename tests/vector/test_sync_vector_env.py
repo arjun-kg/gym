@@ -77,7 +77,7 @@ def test_step_sync_vector_env(use_single_action_space):
             actions = [env.single_action_space.sample() for _ in range(8)]
         else:
             actions = env.action_space.sample()
-        observations, rewards, dones, _ = env.step(actions)
+        observations, rewards, dones, truncateds, _ = env.step(actions)
     finally:
         env.close()
 
@@ -96,6 +96,11 @@ def test_step_sync_vector_env(use_single_action_space):
     assert dones.dtype == np.bool_
     assert dones.ndim == 1
     assert dones.size == 8
+
+    assert isinstance(truncateds, np.ndarray)
+    assert truncateds.dtype == np.bool_
+    assert truncateds.ndim == 1
+    assert truncateds.size == 8
 
 
 def test_call_sync_vector_env():
@@ -151,7 +156,7 @@ def test_custom_space_sync_vector_env():
         assert isinstance(env.action_space, Tuple)
 
         actions = ("action-2", "action-3", "action-5", "action-7")
-        step_observations, rewards, dones, _ = env.step(actions)
+        step_observations, rewards, dones, truncateds, _ = env.step(actions)
     finally:
         env.close()
 

@@ -107,7 +107,7 @@ class AtariPreprocessing(gym.Wrapper):
         R = 0.0
 
         for t in range(self.frame_skip):
-            _, reward, done, info = self.env.step(action)
+            _, reward, done, truncated, info = self.env.step(action)
             R += reward
             self.game_over = done
 
@@ -128,7 +128,7 @@ class AtariPreprocessing(gym.Wrapper):
                     self.ale.getScreenGrayscale(self.obs_buffer[0])
                 else:
                     self.ale.getScreenRGB(self.obs_buffer[0])
-        return self._get_obs(), R, done, info
+        return self._get_obs(), R, done, truncated, info
 
     def reset(self, **kwargs):
         # NoopReset
@@ -144,7 +144,7 @@ class AtariPreprocessing(gym.Wrapper):
             else 0
         )
         for _ in range(noops):
-            _, _, done, step_info = self.env.step(0)
+            _, _, done, _, step_info = self.env.step(0)
             reset_info.update(step_info)
             if done:
                 if kwargs.get("return_info", False):

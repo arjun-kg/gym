@@ -120,7 +120,7 @@ class PendulumEnv(gym.Env):
         newth = th + newthdot * dt
 
         self.state = np.array([newth, newthdot])
-        return self._get_obs(), -costs, False, {}
+        return self._get_obs(), -costs, False, False, {}
 
     def reset(
         self,

@@ -61,7 +61,7 @@ class Env(Generic[ObsType, ActType]):
         self._np_random = value
 
     @abstractmethod
-    def step(self, action: ActType) -> Tuple[ObsType, float, bool, dict]:
+    def step(self, action: ActType) -> Tuple[ObsType, float, bool, bool, dict]:
         """Run one timestep of the environment's dynamics. When end of
         episode is reached, you are responsible for calling `reset()`
         to reset this environment's state.
@@ -75,6 +75,7 @@ class Env(Generic[ObsType, ActType]):
             observation (object): agent's observation of the current environment
             reward (float) : amount of reward returned after previous action
             done (bool): whether the episode has ended, in which case further step() calls will return undefined results
+            truncated (bool): whether the episode has truncated, i.e., ended due to a timelimit
             info (dict): contains auxiliary diagnostic information (helpful for debugging, logging, and sometimes learning)
         """
         raise NotImplementedError
@@ -311,8 +312,8 @@ class ObservationWrapper(Wrapper):
             return self.observation(self.env.reset(**kwargs))
 
     def step(self, action):
-        observation, reward, done, info = self.env.step(action)
-        return self.observation(observation), reward, done, info
+        observation, reward, done, truncated, info = self.env.step(action)
+        return self.observation(observation), reward, done, truncated, info
 
     @abstractmethod
     def observation(self, observation):
@@ -324,8 +325,8 @@ class RewardWrapper(Wrapper):
         return self.env.reset(**kwargs)
 
     def step(self, action):
-        observation, reward, done, info = self.env.step(action)
-        return observation, self.reward(reward), done, info
+        observation, reward, done, truncated, info = self.env.step(action)
+        return observation, self.reward(reward), done, truncated, info
 
     @abstractmethod
     def reward(self, reward):

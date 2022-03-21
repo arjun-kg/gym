@@ -436,7 +436,7 @@ class CarRacing(gym.Env, EzPickle):
                 done = True
                 step_reward = -100
 
-        return self.state, step_reward, done, {}
+        return self.state, step_reward, done, False, {}
 
     def render(self, mode="human"):
         assert mode in ["human", "state_pixels", "rgb_array"]
@@ -651,7 +651,7 @@ if __name__ == "__main__":
         restart = False
         while True:
             register_input()
-            s, r, done, info = env.step(a)
+            s, r, done, trunc, info = env.step(a)
             total_reward += r
             if steps % 200 == 0 or done:
                 print("\naction " + str([f"{x:+0.2f}" for x in a]))

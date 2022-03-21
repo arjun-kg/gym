@@ -104,6 +104,9 @@ class VectorEnv(gym.Env):
         dones : :obj:`np.ndarray`, dtype :obj:`np.bool_`
             A vector whose entries indicate whether the episode has ended.
 
+        truncateds : :obj:`np.ndarray`, dtype :obj:`np.bool_`
+            A vector whose entries indicate whether the episode has ended due to truncation.
+
         infos : list of dict
             A list of auxiliary diagnostic information dicts from sub-environments.
         """

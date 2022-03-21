@@ -131,7 +131,7 @@ class MountainCarEnv(gym.Env):
         reward = -1.0
 
         self.state = (position, velocity)
-        return np.array(self.state, dtype=np.float32), reward, done, {}
+        return np.array(self.state, dtype=np.float32), reward, done, False, {}
 
     def reset(
         self,

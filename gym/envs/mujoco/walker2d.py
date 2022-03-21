@@ -18,7 +18,7 @@ class Walker2dEnv(mujoco_env.MujocoEnv, utils.EzPickle):
         reward -= 1e-3 * np.square(a).sum()
         done = not (height > 0.8 and height < 2.0 and ang > -1.0 and ang < 1.0)
         ob = self._get_obs()
-        return ob, reward, done, {}
+        return ob, reward, done, False, {}
 
     def _get_obs(self):
         qpos = self.sim.data.qpos

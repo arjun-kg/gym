@@ -329,7 +329,7 @@ class HumanoidEnv(mujoco_env.MujocoEnv, utils.EzPickle):
             "forward_reward": forward_reward,
         }
 
-        return observation, reward, done, info
+        return observation, reward, done, False, info
 
     def reset_model(self):
         noise_low = -self._reset_noise_scale

@@ -18,8 +18,8 @@ def test_transform_reward(env_id):
         env.reset(seed=0)
         wrapped_env.reset(seed=0)
 
-        _, reward, _, _ = env.step(action)
-        _, wrapped_reward, _, _ = wrapped_env.step(action)
+        _, reward, _, _, _ = env.step(action)
+        _, wrapped_reward, _, _, _ = wrapped_env.step(action)
 
         assert wrapped_reward == scale * reward
     del env, wrapped_env
@@ -34,8 +34,8 @@ def test_transform_reward(env_id):
     env.reset(seed=0)
     wrapped_env.reset(seed=0)
 
-    _, reward, _, _ = env.step(action)
-    _, wrapped_reward, _, _ = wrapped_env.step(action)
+    _, reward, _, _, _ = env.step(action)
+    _, wrapped_reward, _, _, _ = wrapped_env.step(action)
 
     assert abs(wrapped_reward) < abs(reward)
     assert wrapped_reward == -0.0005 or wrapped_reward == 0.0002
@@ -50,7 +50,7 @@ def test_transform_reward(env_id):
 
     for _ in range(1000):
         action = env.action_space.sample()
-        _, wrapped_reward, done, _ = wrapped_env.step(action)
+        _, wrapped_reward, done, _, _ = wrapped_env.step(action)
         assert wrapped_reward in [-1.0, 0.0, 1.0]
         if done:
             break

@@ -44,6 +44,7 @@ class HumanoidEnv(mujoco_env.MujocoEnv, utils.EzPickle):
             self._get_obs(),
             reward,
             done,
+            False,
             dict(
                 reward_linvel=lin_vel_cost,
                 reward_quadctrl=-quad_ctrl_cost,

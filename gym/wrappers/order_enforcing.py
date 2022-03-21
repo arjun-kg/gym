@@ -10,8 +10,8 @@ class OrderEnforcing(gym.Wrapper):
 
     def step(self, action):
         assert self._has_reset, "Cannot call env.step() before calling reset()"
-        observation, reward, done, info = self.env.step(action)
-        return observation, reward, done, info
+        observation, reward, done, truncated, info = self.env.step(action)
+        return observation, reward, done, truncated, info
 
     def reset(self, **kwargs):
         self._has_reset = True

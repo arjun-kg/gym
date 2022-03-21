@@ -379,6 +379,9 @@ class AsyncVectorEnv(VectorEnv):
         dones : :obj:`np.ndarray`, dtype :obj:`np.bool_`
             A vector whose entries indicate whether the episode has ended.
 
+        truncateds: :obj:`np.ndarray`, dtype :obj:`np.bool_`
+            A vector whose entries indicate whether the episode has ended due to truncation.
+
         infos : list of dict
             A list of auxiliary diagnostic information dicts from sub-environments.
 
@@ -410,7 +413,7 @@ class AsyncVectorEnv(VectorEnv):
         results, successes = zip(*[pipe.recv() for pipe in self.parent_pipes])
         self._raise_if_errors(successes)
         self._state = AsyncState.DEFAULT
-        observations_list, rewards, dones, infos = zip(*results)
+        observations_list, rewards, dones, truncateds, infos = zip(*results)
 
         if not self.shared_memory:
             self.observations = concatenate(
@@ -423,6 +426,7 @@ class AsyncVectorEnv(VectorEnv):
             deepcopy(self.observations) if self.copy else self.observations,
             np.array(rewards),
             np.array(dones, dtype=np.bool_),
+            np.array(truncateds, dtype=np.bool_),
             infos,
         )
 
@@ -647,11 +651,11 @@ def _worker(index, env_fn, pipe, parent_pipe, shared_memory, error_queue):
                     pipe.send((observation, True))
 
             elif command == "step":
-                observation, reward, done, info = env.step(data)
+                observation, reward, done, truncated, info = env.step(data)
                 if done:
                     info["terminal_observation"] = observation
                     observation = env.reset()
-                pipe.send(((observation, reward, done, info), True))
+                pipe.send(((observation, reward, done, truncated, info), True))
             elif command == "seed":
                 env.seed(data)
                 pipe.send((None, True))
@@ -716,14 +720,14 @@ def _worker_shared_memory(index, env_fn, pipe, parent_pipe, shared_memory, error
                     )
                     pipe.send((None, True))
             elif command == "step":
-                observation, reward, done, info = env.step(data)
+                observation, reward, done, truncated, info = env.step(data)
                 if done:
                     info["terminal_observation"] = observation
                     observation = env.reset()
                 write_to_shared_memory(
                     observation_space, index, observation, shared_memory
                 )
-                pipe.send(((None, reward, done, info), True))
+                pipe.send(((None, reward, done, truncated, info), True))
             elif command == "seed":
                 env.seed(data)
                 pipe.send((None, True))

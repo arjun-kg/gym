@@ -24,7 +24,7 @@ class HopperEnv(mujoco_env.MujocoEnv, utils.EzPickle):
             and (abs(ang) < 0.2)
         )
         ob = self._get_obs()
-        return ob, reward, done, {}
+        return ob, reward, done, False, {}
 
     def _get_obs(self):
         return np.concatenate(

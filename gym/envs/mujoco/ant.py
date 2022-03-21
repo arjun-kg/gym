@@ -27,6 +27,7 @@ class AntEnv(mujoco_env.MujocoEnv, utils.EzPickle):
             ob,
             reward,
             done,
+            False,
             dict(
                 reward_forward=forward_reward,
                 reward_ctrl=-ctrl_cost,

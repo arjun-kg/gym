@@ -32,8 +32,8 @@ def test_vector_env_equal(shared_memory):
             assert actions in sync_env.action_space
 
             # fmt: off
-            async_observations, async_rewards, async_dones, async_infos = async_env.step(actions)
-            sync_observations, sync_rewards, sync_dones, sync_infos = sync_env.step(actions)
+            async_observations, async_rewards, async_dones, async_truncateds, async_infos = async_env.step(actions)
+            sync_observations, sync_rewards, sync_dones, sync_truncateds, sync_infos = sync_env.step(actions)
             # fmt: on
 
             for idx in range(len(sync_dones)):
@@ -45,6 +45,7 @@ def test_vector_env_equal(shared_memory):
             assert np.all(async_observations == sync_observations)
             assert np.all(async_rewards == sync_rewards)
             assert np.all(async_dones == sync_dones)
+            assert np.all(async_truncateds == sync_truncateds)
 
     finally:
         async_env.close()

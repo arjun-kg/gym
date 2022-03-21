@@ -442,7 +442,7 @@ class LunarLander(gym.Env, EzPickle):
         if not self.lander.awake:
             done = True
             reward = +100
-        return np.array(state, dtype=np.float32), reward, done, {}
+        return np.array(state, dtype=np.float32), reward, done, False, {}
 
     def render(self, mode="human"):
         if self.screen is None:
@@ -611,7 +611,7 @@ def demo_heuristic_lander(env, seed=None, render=False):
     s = env.reset(seed=seed)
     while True:
         a = heuristic(env, s)
-        s, r, done, info = env.step(a)
+        s, r, done, truncated, info = env.step(a)
         total_reward += r
 
         if render:

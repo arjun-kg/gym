@@ -19,7 +19,7 @@ def test_record_video_using_default_trigger():
     env.reset()
     for _ in range(199):
         action = env.action_space.sample()
-        _, _, done, _ = env.step(action)
+        _, _, done, _, _ = env.step(action)
         if done:
             env.reset()
     env.close()
@@ -68,7 +68,7 @@ def test_record_video_step_trigger():
     env.reset()
     for _ in range(199):
         action = env.action_space.sample()
-        _, _, done, _ = env.step(action)
+        _, _, done, _, _ = env.step(action)
         if done:
             env.reset()
     env.close()
@@ -96,7 +96,7 @@ def test_record_video_within_vector():
     envs = gym.wrappers.RecordEpisodeStatistics(envs)
     envs.reset()
     for i in range(199):
-        _, _, _, infos = envs.step(envs.action_space.sample())
+        _, _, _, _, infos = envs.step(envs.action_space.sample())
         for info in infos:
             if "episode" in info.keys():
                 print(f"episode_reward={info['episode']['r']}")

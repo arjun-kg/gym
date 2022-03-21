@@ -68,7 +68,7 @@ class MujocoEnv(gym.Env):
         self._set_action_space()
 
         action = self.action_space.sample()
-        observation, _reward, done, _info = self.step(action)
+        observation, _reward, done, _truncated, _info = self.step(action)
         assert not done
 
         self._set_observation_space(observation)

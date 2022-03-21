@@ -175,7 +175,7 @@ class HalfCheetahEnv(mujoco_env.MujocoEnv, utils.EzPickle):
             "reward_ctrl": -ctrl_cost,
         }
 
-        return observation, reward, done, info
+        return observation, reward, done, False, info
 
     def _get_obs(self):
         position = self.sim.data.qpos.flat.copy()

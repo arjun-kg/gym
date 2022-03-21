@@ -533,7 +533,7 @@ class BipedalWalker(gym.Env, EzPickle):
             done = True
         if pos[0] > (TERRAIN_LENGTH - TERRAIN_GRASS) * TERRAIN_STEP:
             done = True
-        return np.array(state, dtype=np.float32), reward, done, {}
+        return np.array(state, dtype=np.float32), reward, done, False, {}
 
     def render(self, mode="human"):
         if self.screen is None:
@@ -698,7 +698,7 @@ if __name__ == "__main__":
     SUPPORT_KNEE_ANGLE = +0.1
     supporting_knee_angle = SUPPORT_KNEE_ANGLE
     while True:
-        s, r, done, info = env.step(a)
+        s, r, done, trunc, info = env.step(a)
         total_reward += r
         if steps % 20 == 0 or done:
             print("\naction " + str([f"{x:+0.2f}" for x in a]))

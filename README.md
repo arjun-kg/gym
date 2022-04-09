@@ -1,8 +1,12 @@
+[![pre-commit](https://img.shields.io/badge/pre--commit-enabled-brightgreen?logo=pre-commit&logoColor=white)](https://pre-commit.com/) [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
+
 ## Gym
 
 Gym is an open source Python library for developing and comparing reinforcement learning algorithms by providing a standard API to communicate between learning algorithms and environments, as well as a standard set of environments compliant with that API. Since its release, Gym's API has become the field standard for doing this.
 
 Gym documentation website is at [https://www.gymlibrary.ml/](https://www.gymlibrary.ml/), and you can propose fixes and changes [here](https://github.com/Farama-Foundation/gym-docs).
+
+Gym also has a discord server for development purposes that you can join here: https://discord.gg/nHg2JRN489
 
 ## Installation
 

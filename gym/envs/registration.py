@@ -1,24 +1,24 @@
 from __future__ import annotations
 
-import re
-import sys
+import contextlib
 import copy
 import difflib
 import importlib
 import importlib.util
-import contextlib
+import re
+import sys
 from typing import (
-    Callable,
-    Type,
-    Optional,
-    Union,
-    Tuple,
-    Generator,
-    Sequence,
-    cast,
-    SupportsFloat,
-    overload,
     Any,
+    Callable,
+    Generator,
+    Optional,
+    Sequence,
+    SupportsFloat,
+    Tuple,
+    Type,
+    Union,
+    cast,
+    overload,
 )
 
 if sys.version_info < (3, 10):
@@ -26,15 +26,14 @@ if sys.version_info < (3, 10):
 else:
     import importlib.metadata as metadata
 
-from dataclasses import dataclass, field, InitVar
 from collections import defaultdict
 from collections.abc import MutableMapping
+from dataclasses import InitVar, dataclass, field
 
 import numpy as np
 
-from gym import error, logger, Env
+from gym import Env, error, logger
 from gym.envs.__relocated__ import internal_env_relocation_map
-
 
 if sys.version_info >= (3, 8):
     from typing import Literal
@@ -91,16 +90,18 @@ class EnvSpec:
         nondeterministic: Whether this environment is non-deterministic even after seeding
         max_episode_steps: The maximum number of steps that an episode can consist of
         order_enforce: Whether to wrap the environment in an orderEnforcing wrapper
+        autoreset: Whether the environment should automatically reset when it reaches the done state
         kwargs: The kwargs to pass to the environment class
 
     """
 
     id_requested: InitVar[str]
     entry_point: Optional[Union[Callable, str]] = field(default=None)
-    reward_threshold: Optional[int] = field(default=None)
+    reward_threshold: Optional[float] = field(default=None)
     nondeterministic: bool = field(default=False)
     max_episode_steps: Optional[int] = field(default=None)
     order_enforce: bool = field(default=True)
+    autoreset: bool = field(default=False)
     kwargs: dict = field(default_factory=dict)
     namespace: Optional[str] = field(init=False)
     name: str = field(init=False)
@@ -133,6 +134,10 @@ class EnvSpec:
         _kwargs = self.kwargs.copy()
         _kwargs.update(kwargs)
 
+        if "autoreset" in _kwargs:
+            self.autoreset = _kwargs["autoreset"]
+            del _kwargs["autoreset"]
+
         if callable(self.entry_point):
             env = self.entry_point(**_kwargs)
         else:
@@ -143,15 +148,23 @@ class EnvSpec:
         spec = copy.deepcopy(self)
         spec.kwargs = _kwargs
         env.unwrapped.spec = spec
+
         if self.order_enforce:
             from gym.wrappers.order_enforcing import OrderEnforcing
 
             env = OrderEnforcing(env)
+
         assert env.spec is not None, "expected spec to be set to the unwrapped env."
         if env.spec.max_episode_steps is not None:
             from gym.wrappers.time_limit import TimeLimit
 
             env = TimeLimit(env, max_episode_steps=env.spec.max_episode_steps)
+
+        if self.autoreset:
+            from gym.wrappers.autoreset import AutoResetWrapper
+
+            env = AutoResetWrapper(env)
+
         return env
 
 
@@ -670,9 +683,9 @@ def make(id: Literal[
 # ----------------------------------------
 
 @overload
-def make(id: str, **kwargs) -> "Env": ...
+def make(id: str, **kwargs) -> Env: ...
 # fmt: on
-def make(id: str, **kwargs) -> "Env":
+def make(id: str, **kwargs) -> Env:
     return registry.make(id, **kwargs)
 
 
